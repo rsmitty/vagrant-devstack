@@ -18,10 +18,9 @@ fi
 sudo sed -i 's/http:\/\/us.archive.ubuntu.com\/ubuntu\//mirror:\/\/mirrors.ubuntu.com\/mirrors.txt/g' /etc/apt/sources.list
 
 sudo apt-get update
-sudo apt-get install -qqy git
+sudo apt-get install -qqy git ebtables bridge-utils
 
-# Fetch devstack folsom
-git clone -b stable/folsom https://github.com/openstack-dev/devstack.git
+git clone https://github.com/openstack-dev/devstack.git
 
 # Copy conf to be used
 cp /vagrant/devstack.conf devstack/localrc
@@ -30,6 +29,6 @@ cp /vagrant/devstack.conf devstack/localrc
 cd devstack
 ./stack.sh
 
-#Copy back all PIP cache data to the shared folder, for subsequent use
-cp /var/cache/pip/* /vagrant/pip_cache
-cp -R /var/cache/apt/* /vagrant/apt_cache/ || true
+nova secgroup-add-rule default tcp 22 22 0.0.0.0/0
+nova secgroup-add-rule default tcp 80 80 0.0.0.0/0
+nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
